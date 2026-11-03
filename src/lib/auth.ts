@@ -10,7 +10,7 @@ import { cookies } from 'next/headers';
 
 import type { Profile, Session } from './types';
 import { DEMO_ACCOUNTS } from './demo-data';
-import { createSupabaseServerClient } from './supabase';
+import { createSupabaseServerClient, createSupabaseServiceClient } from './supabase';
 import { createProfile, getMode, getProfile, getProfileByEmail, isAdminUser } from './db';
 
 const SESSION_COOKIE = 'ms_session';
@@ -115,24 +115,56 @@ export async function registerUser(input: {
     await setSessionCookie(profile.id);
     return { profile, isAdmin: false };
   }
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) throw new Error('Supabase não configurado');
-  const { data, error } = await supabase.auth.signUp({
+  const admin = createSupabaseServiceClient();
+  if (!admin) throw new Error('Supabase não configurado');
+  // Cria o usuário já confirmado via Admin API. O supabase.auth.signUp() comum
+  // não serve aqui: com a confirmação de e-mail ativada no projeto (padrão do
+  // Supabase), ele retorna sem usuário e o cadastro quebra com erro genérico.
+  const { data, error } = await admin.auth.admin.createUser({
     email: input.email,
     password: input.password,
-    options: { data: { name: input.name, phone: input.phone ?? null } },
+    email_confirm: true,
+    user_metadata: { name: input.name, phone: input.phone ?? null },
   });
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (/already registered|already exists/i.test(error.message)) {
+      throw new Error('EMAIL_TAKEN');
+    }
+    throw new Error(error.message);
+  }
   const user = data.user;
-  if (!user) throw new Error('EMAIL_CONFIRMATION_REQUIRED');
+  if (!user) throw new Error('Falha ao criar usuário');
+  // O trigger on_auth_user_created já criou o profile (nome via metadados).
+  // Busca com pequena espera caso haja latência; se não existir, cria manual.
   let profile = await getProfile(user.id);
   if (!profile) {
-    profile = await createProfile({
-      id: user.id,
-      email: user.email ?? input.email,
-      name: input.name,
-      phone: input.phone ?? null,
-    });
+    try {
+      profile = await createProfile({
+        id: user.id,
+        email: user.email ?? input.email,
+        name: input.name,
+        phone: input.phone ?? null,
+      });
+    } catch (e) {
+      // Condição de corrida com o trigger: o profile apareceu entre o get e o
+      // insert — busca de novo em vez de falhar.
+      if (e instanceof Error && e.message === 'EMAIL_TAKEN') {
+        profile = await getProfile(user.id);
+      } else {
+        throw e;
+      }
+    }
+  }
+  if (!profile) throw new Error('Falha ao criar perfil');
+  // O trigger não salva o telefone — completa o profile quando necessário.
+  if (input.phone && !profile.phone) {
+    const { data: updated, error: upErr } = await admin
+      .from('profiles')
+      .update({ phone: input.phone })
+      .eq('id', profile.id)
+      .select()
+      .single();
+    if (!upErr && updated) profile = updated as Profile;
   }
   return { profile, isAdmin: await isAdminUser(profile.id) };
 }
