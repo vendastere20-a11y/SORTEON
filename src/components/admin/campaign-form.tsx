@@ -104,8 +104,8 @@ export function CampaignForm({
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao salvar a campanha.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao salvar a campanha.');
       }
       onSuccess();
     } catch (err) {

@@ -84,8 +84,8 @@ export function DrawSessionManager({
         body: JSON.stringify({ campaign_id: campaignId, scheduled_at: date.toISOString() }),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao agendar a apuração.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao agendar a apuração.');
       }
       setScheduledAt('');
       router.refresh();
@@ -106,8 +106,8 @@ export function DrawSessionManager({
     try {
       const res = await fetch(`/api/draw/${session.id}/execute`, { method: 'POST' });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao executar a apuração.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao executar a apuração.');
       }
       router.refresh();
     } catch (err) {

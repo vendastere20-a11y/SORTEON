@@ -81,8 +81,8 @@ export function CampaignManager({
     try {
       const res = await fetch(`/api/campaigns/${campaign.id}`, { method: 'DELETE' });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao excluir a campanha.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao excluir a campanha.');
       }
       router.refresh();
     } catch (err) {

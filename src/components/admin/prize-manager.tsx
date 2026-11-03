@@ -62,8 +62,8 @@ export function PrizeManager({
     try {
       const res = await fetch(`/api/prizes/${prize.id}`, { method: 'DELETE' });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao excluir o prêmio.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao excluir o prêmio.');
       }
       router.refresh();
     } catch (err) {
@@ -253,6 +253,10 @@ function PrizeForm({
       setError('Informe o nome do produto.');
       return;
     }
+    if (!imageUrl.trim()) {
+      setError('Adicione uma foto do produto.');
+      return;
+    }
     const parsedValue = value.trim() === '' ? null : Number(value.replace(',', '.'));
     if (parsedValue !== null && (!Number.isFinite(parsedValue) || parsedValue < 0)) {
       setError('Valor precisa ser um número maior ou igual a zero.');
@@ -281,8 +285,8 @@ function PrizeForm({
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(data?.message ?? 'Falha ao salvar o prêmio.');
+        const data = (await res.json().catch(() => null)) as { message?: string; error?: string } | null;
+        throw new Error(data?.error ?? data?.message ?? 'Falha ao salvar o prêmio.');
       }
       onSuccess();
     } catch (err) {
