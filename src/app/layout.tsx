@@ -24,6 +24,15 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const cookieStore = await cookies();
   const isLoggedIn = Boolean(cookieStore.get("ms_session")?.value);
+  let isAdmin = false;
+  if (isLoggedIn) {
+    try {
+      const { getSession } = await import("@/lib/auth");
+      isAdmin = Boolean((await getSession())?.isAdmin);
+    } catch {
+      isAdmin = false;
+    }
+  }
 
   return (
     <html
@@ -31,7 +40,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <SiteHeader isLoggedIn={isLoggedIn} />
+        <SiteHeader isLoggedIn={isLoggedIn} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
         <SiteFooter />
       </body>

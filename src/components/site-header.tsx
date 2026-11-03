@@ -12,8 +12,8 @@ const NAV = [
   { href: "/resultados", label: "Resultados" },
 ];
 
-/** Cabeçalho do site — recebe isLoggedIn do layout (server component). */
-export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
+/** Cabeçalho do site — recebe isLoggedIn/isAdmin do layout (server component). */
+export function SiteHeader({ isLoggedIn, isAdmin = false }: { isLoggedIn: boolean; isAdmin?: boolean }) {
   const [open, setOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const pathname = usePathname();
@@ -68,6 +68,14 @@ export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
         <div className="hidden items-center gap-2 md:flex">
           {isLoggedIn ? (
             <>
+              {isAdmin && (
+                <Link
+                  href="/admin/campanhas"
+                  className="inline-flex items-center gap-2 rounded-lg border border-primary/40 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary/10"
+                >
+                  Admin
+                </Link>
+              )}
               <Link
                 href="/painel"
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:brightness-110"
@@ -136,6 +144,15 @@ export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
           <div className="mt-2 flex gap-2 border-t border-border/60 pt-3">
             {isLoggedIn ? (
               <>
+                {isAdmin && (
+                  <Link
+                    href="/admin/campanhas"
+                    onClick={() => setOpen(false)}
+                    className="flex-1 rounded-lg border border-primary/40 px-4 py-2.5 text-center text-sm font-bold text-primary"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/painel"
                   onClick={() => setOpen(false)}
