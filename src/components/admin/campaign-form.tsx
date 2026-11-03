@@ -40,8 +40,16 @@ export function CampaignForm({
   const [pricePerNumber, setPricePerNumber] = useState<string>(
     campaign?.price_per_number != null ? String(campaign.price_per_number).replace('.', ',') : '',
   );
-  const [startsAt, setStartsAt] = useState(toDatetimeLocalValue(campaign?.starts_at));
-  const [endsAt, setEndsAt] = useState(toDatetimeLocalValue(campaign?.ends_at));
+  const [startsAt, setStartsAt] = useState(
+    () =>
+      toDatetimeLocalValue(campaign?.starts_at) ||
+      toDatetimeLocalValue(new Date().toISOString()),
+  );
+  const [endsAt, setEndsAt] = useState(
+    () =>
+      toDatetimeLocalValue(campaign?.ends_at) ||
+      toDatetimeLocalValue(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()),
+  );
   const [drawAt, setDrawAt] = useState(toDatetimeLocalValue(campaign?.draw_at ?? null));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
