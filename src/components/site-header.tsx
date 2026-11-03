@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Trophy, Menu, X, LayoutDashboard, LogIn, UserPlus } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Trophy, Menu, X, LayoutDashboard, LogIn, LogOut, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -15,7 +15,21 @@ const NAV = [
 /** Cabeçalho do site — recebe isLoggedIn do layout (server component). */
 export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [open, setOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    if (leaving) return;
+    setLeaving(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      setOpen(false);
+      router.push("/");
+      router.refresh();
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
@@ -53,13 +67,25 @@ export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         <div className="hidden items-center gap-2 md:flex">
           {isLoggedIn ? (
-            <Link
-              href="/painel"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:brightness-110"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              Meu painel
-            </Link>
+            <>
+              <Link
+                href="/painel"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:brightness-110"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Meu painel
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={leaving}
+                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:text-foreground disabled:opacity-50"
+                title="Sair da conta"
+              >
+                <LogOut className="h-4 w-4" />
+                Sair
+              </button>
+            </>
           ) : (
             <>
               <Link
@@ -109,13 +135,24 @@ export function SiteHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
           ))}
           <div className="mt-2 flex gap-2 border-t border-border/60 pt-3">
             {isLoggedIn ? (
-              <Link
-                href="/painel"
-                onClick={() => setOpen(false)}
-                className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-bold text-primary-foreground"
-              >
-                Meu painel
-              </Link>
+              <>
+                <Link
+                  href="/painel"
+                  onClick={() => setOpen(false)}
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-bold text-primary-foreground"
+                >
+                  Meu painel
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  disabled={leaving}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold disabled:opacity-50"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sair
+                </button>
+              </>
             ) : (
               <>
                 <Link

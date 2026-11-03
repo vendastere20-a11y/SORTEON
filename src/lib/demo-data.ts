@@ -17,8 +17,8 @@ import type {
 
 /** Contas de acesso da demonstração (login por e-mail + senha). */
 export const DEMO_ACCOUNTS: DemoAccount[] = [
-  { email: 'demo@megasorte.demo', password: 'demo123', name: 'Participante Demo', isAdmin: false },
-  { email: 'admin@megasorte.demo', password: 'demo123', name: 'Admin Demo', isAdmin: true },
+  { email: 'demo@megasorte.demo', password: 'bruno123', name: 'Participante Demo', isAdmin: false },
+  { email: 'admin@megasorte.demo', password: 'bruno123', name: 'Admin Demo', isAdmin: true },
 ];
 
 /** Formato do store em memória usado no modo demo. */
