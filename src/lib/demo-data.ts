@@ -188,15 +188,15 @@ export function buildDemoStore(): DemoStore {
 
   // ---- Prêmios: 1-2 por campanha (valores fictícios em R$) ----
   const prizes: Prize[] = [
-    { id: 'prize-iphone-1', campaign_id: 'camp-iphone', name: 'iPhone 17 Pro Max 256GB', description: 'Prêmio principal (demonstração).', value: 9499.0, quantity: 1, position: 1, image_url: null, created_at: at(-7 * DAY) },
-    { id: 'prize-iphone-2', campaign_id: 'camp-iphone', name: 'Capinha + película premium', description: 'Prêmio secundário (demonstração).', value: 149.9, quantity: 1, position: 2, image_url: null, created_at: at(-7 * DAY) },
-    { id: 'prize-ps5-1', campaign_id: 'camp-ps5', name: 'PlayStation 5 Slim + 2 controles DualSense', description: 'Prêmio único (demonstração).', value: 4299.0, quantity: 1, position: 1, image_url: null, created_at: at(-5 * DAY) },
-    { id: 'prize-pix-1', campaign_id: 'camp-pix', name: 'R$ 5.000 via PIX', description: 'Prêmio principal (demonstração).', value: 5000.0, quantity: 1, position: 1, image_url: null, created_at: at(-2 * DAY) },
-    { id: 'prize-pix-2', campaign_id: 'camp-pix', name: 'R$ 1.000 via PIX', description: 'Prêmio secundário (demonstração).', value: 1000.0, quantity: 1, position: 2, image_url: null, created_at: at(-2 * DAY) },
-    { id: 'prize-moto-1', campaign_id: 'camp-moto', name: 'Honda CB 300F Twister 0km', description: 'Prêmio único (demonstração).', value: 27900.0, quantity: 1, position: 1, image_url: null, created_at: at(-1 * DAY) },
-    { id: 'prize-airfryer-1', campaign_id: 'camp-airfryer', name: 'Air Fryer 5L', description: 'Prêmio principal (demonstração).', value: 649.0, quantity: 1, position: 1, image_url: null, created_at: at(-20 * DAY) },
-    { id: 'prize-airfryer-2', campaign_id: 'camp-airfryer', name: 'Kit Churrasco Inox 12 peças', description: 'Prêmio secundário (demonstração).', value: 189.9, quantity: 1, position: 2, image_url: null, created_at: at(-20 * DAY) },
-    { id: 'prize-echo-1', campaign_id: 'camp-echo', name: 'Echo Dot 5ª geração', description: 'Prêmio único (demonstração).', value: 429.0, quantity: 1, position: 1, image_url: null, created_at: at(-3 * DAY) },
+    { id: 'prize-iphone-1', campaign_id: 'camp-iphone', name: 'iPhone 17 Pro Max 256GB', description: 'Prêmio principal (demonstração).', value: 9499.0, quantity: 1, position: 1, image_url: '/demo-prizes/iphone-17-pro-max.jpg', created_at: at(-7 * DAY) },
+    { id: 'prize-iphone-2', campaign_id: 'camp-iphone', name: 'Capinha + película premium', description: 'Prêmio secundário (demonstração).', value: 149.9, quantity: 1, position: 2, image_url: '/demo-prizes/capinha-pelicula.jpg', created_at: at(-7 * DAY) },
+    { id: 'prize-ps5-1', campaign_id: 'camp-ps5', name: 'PlayStation 5 Slim + 2 controles DualSense', description: 'Prêmio único (demonstração).', value: 4299.0, quantity: 1, position: 1, image_url: '/demo-prizes/ps5-slim.jpg', created_at: at(-5 * DAY) },
+    { id: 'prize-pix-1', campaign_id: 'camp-pix', name: 'R$ 5.000 via PIX', description: 'Prêmio principal (demonstração).', value: 5000.0, quantity: 1, position: 1, image_url: '/demo-prizes/pix-5000.jpg', created_at: at(-2 * DAY) },
+    { id: 'prize-pix-2', campaign_id: 'camp-pix', name: 'R$ 1.000 via PIX', description: 'Prêmio secundário (demonstração).', value: 1000.0, quantity: 1, position: 2, image_url: '/demo-prizes/pix-1000.jpg', created_at: at(-2 * DAY) },
+    { id: 'prize-moto-1', campaign_id: 'camp-moto', name: 'Honda CB 300F Twister 0km', description: 'Prêmio único (demonstração).', value: 27900.0, quantity: 1, position: 1, image_url: '/demo-prizes/honda-cb300f.jpg', created_at: at(-1 * DAY) },
+    { id: 'prize-airfryer-1', campaign_id: 'camp-airfryer', name: 'Air Fryer 5L', description: 'Prêmio principal (demonstração).', value: 649.0, quantity: 1, position: 1, image_url: '/demo-prizes/air-fryer-5l.jpg', created_at: at(-20 * DAY) },
+    { id: 'prize-airfryer-2', campaign_id: 'camp-airfryer', name: 'Kit Churrasco Inox 12 peças', description: 'Prêmio secundário (demonstração).', value: 189.9, quantity: 1, position: 2, image_url: '/demo-prizes/kit-churrasco.jpg', created_at: at(-20 * DAY) },
+    { id: 'prize-echo-1', campaign_id: 'camp-echo', name: 'Echo Dot 5ª geração', description: 'Prêmio único (demonstração).', value: 429.0, quantity: 1, position: 1, image_url: '/demo-prizes/echo-dot-5.jpg', created_at: at(-3 * DAY) },
   ];
 
   // ---- Regras: uma por campanha ----

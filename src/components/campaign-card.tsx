@@ -49,16 +49,25 @@ export async function CampaignCard({ campaign }: CampaignCardProps) {
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4">
         {mainPrize && (
-          <div className="rounded-lg border border-border/70 bg-muted/40 p-3">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Prêmio principal
-            </p>
-            <p className="mt-1 font-semibold text-primary">{mainPrize.name}</p>
-            {mainPrize.description && (
-              <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">
-                {mainPrize.description}
-              </p>
+          <div className="overflow-hidden rounded-lg border border-border/70 bg-muted/40">
+            {mainPrize.image_url && (
+              <img
+                src={mainPrize.image_url}
+                alt={mainPrize.name}
+                className="aspect-video w-full object-cover"
+              />
             )}
+            <div className="p-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Prêmio principal
+              </p>
+              <p className="mt-1 font-semibold text-primary">{mainPrize.name}</p>
+              {mainPrize.description && (
+                <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">
+                  {mainPrize.description}
+                </p>
+              )}
+            </div>
           </div>
         )}
         <div>
