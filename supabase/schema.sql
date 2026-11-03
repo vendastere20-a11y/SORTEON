@@ -69,6 +69,8 @@ CREATE TABLE public.campaigns (
                      CHECK (status IN ('draft', 'active', 'paused', 'finished', 'cancelled')),
     identifier_count int  NOT NULL
                      CHECK (identifier_count IN (20, 50, 100, 200, 500, 1000)),
+    price_per_number numeric(12,2)
+                     CHECK (price_per_number IS NULL OR price_per_number > 0),
     starts_at        timestamptz NOT NULL DEFAULT now(),
     ends_at          timestamptz NOT NULL,
     draw_at          timestamptz,
@@ -122,6 +124,7 @@ CREATE TABLE public.prizes (
     name        text NOT NULL,
     description text NOT NULL DEFAULT '',
     value       numeric(12,2),
+    image_url   text,
     quantity    int  NOT NULL DEFAULT 1,
     position    int  NOT NULL DEFAULT 1,
     created_at  timestamptz NOT NULL DEFAULT now()

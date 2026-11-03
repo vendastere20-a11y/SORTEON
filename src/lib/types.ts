@@ -12,6 +12,8 @@ export interface Campaign {
   image_url: string | null;
   status: CampaignStatus;
   identifier_count: number;
+  /** Valor de cada número em R$ (definido pelo admin; null = não informado). */
+  price_per_number: number | null;
   starts_at: string;
   ends_at: string;
   draw_at: string | null;
@@ -26,6 +28,7 @@ export interface CampaignInput {
   image_url?: string | null;
   status: CampaignStatus;
   identifier_count: number;
+  price_per_number?: number | null;
   starts_at: string;
   ends_at: string;
   draw_at?: string | null;
@@ -47,6 +50,8 @@ export interface Prize {
   description: string;
   /** Valor do prêmio em R$ (definido pelo admin; null = não informado). */
   value: number | null;
+  /** Foto do produto (URL ou data URL base64; null = sem foto). */
+  image_url: string | null;
   quantity: number;
   position: number;
   created_at: string;
@@ -57,6 +62,7 @@ export interface PrizeInput {
   name: string;
   description: string;
   value?: number | null;
+  image_url?: string | null;
   quantity: number;
   position: number;
 }

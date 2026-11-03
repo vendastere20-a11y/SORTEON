@@ -78,6 +78,14 @@ export async function PATCH(req: Request, { params }: Ctx) {
     }
     input.identifier_count = body.identifier_count;
   }
+  if (body.price_per_number !== undefined) {
+    const raw = body.price_per_number;
+    const val = raw === null || raw === '' ? null : Number(raw);
+    if (val !== null && (!Number.isFinite(val) || val <= 0 || val > 100000)) {
+      return Response.json({ error: 'Valor por número deve ser maior que zero.' }, { status: 400 });
+    }
+    input.price_per_number = val;
+  }
   if (body.starts_at !== undefined) {
     if (typeof body.starts_at !== 'string' || !isValidDate(body.starts_at)) {
       return Response.json({ error: 'Data de início inválida.' }, { status: 400 });

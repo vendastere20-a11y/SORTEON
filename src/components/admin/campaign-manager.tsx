@@ -117,6 +117,7 @@ export function CampaignManager({
                 <TableHead>Título</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Identificadores</TableHead>
+                <TableHead>Valor/número</TableHead>
                 <TableHead>Período</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
@@ -141,6 +142,11 @@ export function CampaignManager({
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {counts[campaign.id] ?? 0}/{campaign.identifier_count}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-muted-foreground">
+                    {campaign.price_per_number != null
+                      ? `R$ ${campaign.price_per_number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                      : '—'}
                   </TableCell>
                   <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
                     {formatDateTime(campaign.starts_at)} — {formatDateTime(campaign.ends_at)}

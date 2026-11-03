@@ -44,6 +44,11 @@ export async function POST(req: Request) {
   const imageUrlRaw = typeof body?.image_url === 'string' ? body.image_url.trim() : '';
   const status = typeof body?.status === 'string' ? body.status : 'draft';
   const identifierCount = typeof body?.identifier_count === 'number' ? body.identifier_count : null;
+  const pricePerNumberRaw = body?.price_per_number;
+  const pricePerNumber =
+    pricePerNumberRaw === null || pricePerNumberRaw === undefined || pricePerNumberRaw === ''
+      ? null
+      : Number(pricePerNumberRaw);
   const startsAt = typeof body?.starts_at === 'string' ? body.starts_at : '';
   const endsAt = typeof body?.ends_at === 'string' ? body.ends_at : '';
   const drawAtRaw = typeof body?.draw_at === 'string' ? body.draw_at : '';
@@ -59,6 +64,9 @@ export async function POST(req: Request) {
       { error: 'Quantidade de identificadores deve ser 20, 50, 100, 200, 500 ou 1000.' },
       { status: 400 },
     );
+  }
+  if (pricePerNumber !== null && (!Number.isFinite(pricePerNumber) || pricePerNumber <= 0 || pricePerNumber > 100000)) {
+    return Response.json({ error: 'Valor por número deve ser maior que zero.' }, { status: 400 });
   }
   if (!isValidDate(startsAt)) {
     return Response.json({ error: 'Data de início inválida.' }, { status: 400 });
@@ -82,6 +90,7 @@ export async function POST(req: Request) {
     image_url: imageUrlRaw || null,
     status: status as CampaignStatus,
     identifier_count: identifierCount,
+    price_per_number: pricePerNumber,
     starts_at: new Date(startsAt).toISOString(),
     ends_at: new Date(endsAt).toISOString(),
     draw_at: drawAtRaw ? new Date(drawAtRaw).toISOString() : null,

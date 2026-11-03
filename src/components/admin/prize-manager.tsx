@@ -206,8 +206,44 @@ function PrizeForm({
   const [value, setValue] = useState(prize?.value != null ? String(prize.value) : '');
   const [quantity, setQuantity] = useState(prize?.quantity ?? 1);
   const [position, setPosition] = useState(prize?.position ?? 1);
+  const [imageUrl, setImageUrl] = useState(prize?.image_url ?? '');
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  /** Lê o arquivo, comprime via canvas (máx. 1000px, JPEG) e guarda como data URL. */
+  async function handlePhoto(file: File | undefined): Promise<void> {
+    if (!file) return;
+    setPhotoBusy(true);
+    setError(null);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('read'));
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onerror = () => reject(new Error('img'));
+        el.onload = () => resolve(el);
+        el.src = dataUrl;
+      });
+      const max = 1000;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+      setImageUrl(canvas.toDataURL('image/jpeg', 0.82));
+    } catch {
+      setError('Não foi possível ler a foto. Tente outro arquivo.');
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
@@ -232,6 +268,7 @@ function PrizeForm({
       name: name.trim(),
       description: description.trim(),
       value: parsedValue,
+      image_url: imageUrl.trim() || null,
       quantity,
       position,
     };
@@ -291,6 +328,41 @@ function PrizeForm({
           placeholder="Detalhes do prêmio."
           rows={3}
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="prize-photo">Foto do produto</Label>
+        <div className="flex items-center gap-3">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="Foto do prêmio"
+              className="h-20 w-20 rounded-lg border border-border object-cover"
+            />
+          ) : (
+            <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-dashed border-border text-xs text-muted-foreground">
+              Sem foto
+            </div>
+          )}
+          <div className="flex flex-col gap-2">
+            <Input
+              id="prize-photo"
+              type="file"
+              accept="image/*"
+              disabled={photoBusy}
+              onChange={(e) => {
+                handlePhoto(e.target.files?.[0]);
+                e.target.value = '';
+              }}
+            />
+            {imageUrl && (
+              <Button type="button" variant="outline" size="sm" onClick={() => setImageUrl('')}>
+                Remover foto
+              </Button>
+            )}
+          </div>
+        </div>
+        {photoBusy && <p className="text-xs text-muted-foreground">Processando foto…</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">

@@ -39,6 +39,8 @@ export async function POST(req: Request) {
         : Number.NaN;
   const quantity = typeof body?.quantity === 'number' ? body.quantity : 1;
   const position = typeof body?.position === 'number' ? body.position : 0;
+  const imageUrlRaw = typeof body?.image_url === 'string' ? body.image_url.trim() : '';
+  const imageUrl = imageUrlRaw || null;
 
   if (!campaignId) {
     return Response.json({ error: 'Informe a campanha do prêmio.' }, { status: 400 });
@@ -55,12 +57,16 @@ export async function POST(req: Request) {
   if (!Number.isInteger(position) || position < 0) {
     return Response.json({ error: 'Posição deve ser um número inteiro maior ou igual a zero.' }, { status: 400 });
   }
+  if (imageUrl && imageUrl.length > 2_000_000) {
+    return Response.json({ error: 'Foto muito grande (máximo ~2MB).' }, { status: 400 });
+  }
 
   const input: PrizeInput = {
     campaign_id: campaignId,
     name,
     description,
     value: value === null ? null : Math.round(value * 100) / 100,
+    image_url: imageUrl,
     quantity,
     position,
   };

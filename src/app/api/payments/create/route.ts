@@ -5,7 +5,6 @@ import {
   generateOrderId,
   getCampaign,
   getEntryById,
-  getPrizes,
   setEntryOrderId,
 } from '@/lib/db';
 import { createPreference, isPaymentsConfigured } from '@/lib/payments';
@@ -15,7 +14,7 @@ export const dynamic = 'force-dynamic';
 /**
  * POST /api/payments/create — inicia o pagamento da participação.
  * Body: { entry_id }.
- * - Valida dono, campanha e valor do prêmio (definido pelo admin, > 0).
+ * - Valida dono, campanha e valor por número (definido pelo admin, > 0).
  * - Gera (ou reutiliza) o order_id ms-<ts>-<rand> e salva na entry.
  * - Com gateway configurado: cria a preferência no Mercado Pago e devolve
  *   { init_point } para redirect. Nada é cobrado aqui — só gera o link.
@@ -47,11 +46,10 @@ export async function POST(req: Request) {
   if (!campaign) {
     return Response.json({ error: 'Campanha não encontrada.' }, { status: 404 });
   }
-  const prizes = await getPrizes(entry.campaign_id);
-  const price = prizes[0]?.value ?? null;
+  const price = campaign.price_per_number ?? null;
   if (price === null || price === undefined || !(price > 0)) {
     return Response.json(
-      { error: 'O valor desta campanha ainda não foi definido pelo administrador.' },
+      { error: 'O valor por número desta campanha ainda não foi definido pelo administrador.' },
       { status: 400 },
     );
   }

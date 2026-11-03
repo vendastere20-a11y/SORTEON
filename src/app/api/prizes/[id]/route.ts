@@ -47,6 +47,13 @@ export async function PATCH(req: Request, { params }: Ctx) {
       );
     }
   }
+  if (body.image_url !== undefined) {
+    const raw = typeof body.image_url === 'string' ? body.image_url.trim() : '';
+    if (raw && raw.length > 2_000_000) {
+      return Response.json({ error: 'Foto muito grande (máximo ~2MB).' }, { status: 400 });
+    }
+    input.image_url = raw || null;
+  }
   if (body.quantity !== undefined) {
     if (typeof body.quantity !== 'number' || !Number.isInteger(body.quantity) || body.quantity < 1) {
       return Response.json(

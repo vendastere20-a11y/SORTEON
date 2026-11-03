@@ -94,6 +94,7 @@ export async function createCampaign(input: CampaignInput, actorId: string): Pro
     image_url: input.image_url ?? null,
     status: input.status,
     identifier_count: input.identifier_count,
+    price_per_number: input.price_per_number ?? null,
     starts_at: input.starts_at,
     ends_at: input.ends_at,
     draw_at: input.draw_at ?? null,
@@ -210,6 +211,7 @@ export async function createPrize(input: PrizeInput, actorId: string): Promise<P
     const prize: Prize = {
       ...input,
       value: input.value ?? null,
+      image_url: input.image_url ?? null,
       id: genId('prize'),
       created_at: nowIso(),
     };

@@ -37,6 +37,9 @@ export function CampaignForm({
   const [description, setDescription] = useState(campaign?.description ?? '');
   const [status, setStatus] = useState<CampaignStatus>(campaign?.status ?? 'draft');
   const [identifierCount, setIdentifierCount] = useState<number>(campaign?.identifier_count ?? 100);
+  const [pricePerNumber, setPricePerNumber] = useState<string>(
+    campaign?.price_per_number != null ? String(campaign.price_per_number).replace('.', ',') : '',
+  );
   const [startsAt, setStartsAt] = useState(toDatetimeLocalValue(campaign?.starts_at));
   const [endsAt, setEndsAt] = useState(toDatetimeLocalValue(campaign?.ends_at));
   const [drawAt, setDrawAt] = useState(toDatetimeLocalValue(campaign?.draw_at ?? null));
@@ -67,12 +70,19 @@ export function CampaignForm({
       setError('O término precisa ser depois do início.');
       return;
     }
+    const priceTrimmed = pricePerNumber.trim().replace(',', '.');
+    const priceNum = priceTrimmed === '' ? null : Number(priceTrimmed);
+    if (priceNum !== null && (!Number.isFinite(priceNum) || priceNum <= 0)) {
+      setError('Valor por número deve ser maior que zero (ex.: 10,00).');
+      return;
+    }
 
     const payload: CampaignInput = {
       title: title.trim(),
       description: description.trim(),
       status,
       identifier_count: identifierCount,
+      price_per_number: priceNum === null ? null : Math.round(priceNum * 100) / 100,
       starts_at: startsIso,
       ends_at: endsIso,
       draw_at: toIso(drawAt),
@@ -121,7 +131,7 @@ export function CampaignForm({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="campaign-status">Status</Label>
           <Select
@@ -149,6 +159,19 @@ export function CampaignForm({
               </option>
             ))}
           </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="campaign-price">Valor por número (R$)</Label>
+          <Input
+            id="campaign-price"
+            inputMode="decimal"
+            placeholder="Ex.: 10,00"
+            value={pricePerNumber}
+            onChange={(e) => setPricePerNumber(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Quanto o participante paga por cada número escolhido.
+          </p>
         </div>
       </div>
 

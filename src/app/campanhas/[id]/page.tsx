@@ -89,6 +89,12 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
       </div>
       <h1 className="mt-4 text-4xl font-bold tracking-tight">{campaign.title}</h1>
       <p className="mt-4 leading-relaxed text-muted-foreground">{campaign.description}</p>
+      {campaign.price_per_number != null && (
+        <p className="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-lg font-bold text-primary">
+          {formatBRL(campaign.price_per_number)}{" "}
+          <span className="text-sm font-medium text-muted-foreground">por número</span>
+        </p>
+      )}
 
       {/* Progresso */}
       <Card className="mt-8">
@@ -117,7 +123,14 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
         {prizes.length > 0 ? (
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {prizes.map((prize, i) => (
-              <Card key={prize.id}>
+              <Card key={prize.id} className="overflow-hidden">
+                {prize.image_url && (
+                  <img
+                    src={prize.image_url}
+                    alt={prize.name}
+                    className="aspect-video w-full object-cover"
+                  />
+                )}
                 <CardHeader>
                   <Badge variant="secondary" className="w-fit">
                     {i + 1}º prêmio
