@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* Identidade visual MEGA SORTE — tokens do tema (Tailwind v4) */
+@theme {
+  --color-background: #080b12;
+  --color-foreground: #ffffff;
+
+  --color-navy: #17243b;
+  --color-gold: #d6ad51;
+
+  --color-primary: #d6ad51;
+  --color-primary-foreground: #080b12;
+
+  --color-secondary: #17243b;
+  --color-secondary-foreground: #ffffff;
+
+  --color-muted: #101828;
+  --color-muted-foreground: #94a3b8;
+
+  --color-card: #0c1322;
+  --color-card-foreground: #ffffff;
+
+  --color-popover: #0c1322;
+  --color-popover-foreground: #ffffff;
+
+  --color-border: #22304d;
+  --color-input: #0e1626;
+  --color-ring: #d6ad51;
+
+  --color-accent: #17243b;
+  --color-accent-foreground: #ffffff;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: #080b12;
+  }
+}
+
+/* Utilitários próprios */
+@layer utilities {
+  .text-glow-gold {
+    text-shadow: 0 0 24px rgba(214, 173, 81, 0.45);
+  }
+
+  .bg-grid-faint {
+    background-image:
+      linear-gradient(rgba(214, 173, 81, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(214, 173, 81, 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+}
