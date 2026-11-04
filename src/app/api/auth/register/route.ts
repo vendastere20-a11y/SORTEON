@@ -49,7 +49,10 @@ export async function POST(req: Request) {
     );
   } catch (e) {
     if (e instanceof Error && e.message === 'EMAIL_TAKEN') {
-      return Response.json({ error: 'Este e-mail já está cadastrado.' }, { status: 409 });
+      return Response.json(
+        { code: 'EMAIL_TAKEN', error: 'Este e-mail já está cadastrado.' },
+        { status: 409 },
+      );
     }
     throw e;
   }

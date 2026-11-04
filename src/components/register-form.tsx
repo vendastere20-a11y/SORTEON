@@ -56,11 +56,15 @@ export function RegisterForm() {
           email: email.trim(),
           password,
           phone: phone.trim() || undefined,
+          consent,
         }),
       });
-      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      const data = (await res.json().catch(() => null)) as {
+        code?: string;
+        error?: string;
+      } | null;
       if (!res.ok) {
-        if (data?.error === "EMAIL_TAKEN") {
+        if (data?.code === "EMAIL_TAKEN" || res.status === 409) {
           setError("Este e-mail já está cadastrado. Tente entrar na sua conta.");
         } else {
           setError("Não foi possível criar a conta. Tente novamente em instantes.");

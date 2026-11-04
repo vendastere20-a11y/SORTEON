@@ -127,7 +127,7 @@ export async function registerUser(input: {
     user_metadata: { name: input.name, phone: input.phone ?? null },
   });
   if (error) {
-    if (/already registered|already exists/i.test(error.message)) {
+    if (/already.*registered|already exists/i.test(error.message)) {
       throw new Error('EMAIL_TAKEN');
     }
     throw new Error(error.message);
